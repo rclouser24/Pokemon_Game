@@ -1,0 +1,164 @@
+class Trainer{
+    name: string;
+    pokemonTeam: Pokemon[];
+
+    constructor (name: string, pokemonTeam: Pokemon[]){
+        this.name = name;
+        this.pokemonTeam = pokemonTeam;
+    }
+
+    //needs to be able to add a pokemon to the team
+    async fetchPokemon() {
+        try {
+            const pokemonNameElement = document.getElementById("pokemonName") as HTMLInputElement;
+            if (!pokemonNameElement) {
+                throw new Error("Pokemon name input element not found");
+            }
+            const pokemonName = pokemonNameElement.value.toLowerCase();
+    
+            const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
+            
+            if (this.pokemonTeam.length > 3){
+                throw new Error ("You can't have more than 5 pokemon on your team");
+                const errorMessage = document.getElementById("error") as HTMLDivElement;
+                errorMessage.innerText = "You can't have more than 5 pokemon on your team";
+            }
+
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+    
+            const data = await response.json();
+            console.log(data);
+
+            const pokemonSprite = data.sprites.front_default;
+            const imgElement = document.getElementById("pokemonSprite") as HTMLImageElement;
+
+            if (!imgElement) {
+                throw new Error("Pokemon sprite image element not found");
+            }
+    
+            imgElement.src = pokemonSprite;
+            imgElement.style.display = "inline";
+
+            const newPokemon = new Pokemon(
+                data.name,
+                data.id,
+                data.stats.find(stat => stat.stat.name === 'hp').base_stat, // HP
+                pokemonSprite,
+                data.stats.find(stat => stat.stat.name === 'attack').base_stat, // Attack
+            );
+
+            this.pokemonTeam.push(newPokemon);
+            console.log(`${newPokemon.name} has been added to your team!`);
+
+        } catch (error) {
+            console.error(error);
+        }
+
+    }
+
+    //needs to be able to remove a pokemon from the team
+    removePokemon(pokemon: Pokemon){
+        this.pokemonTeam = this.pokemonTeam.filter(poke => poke.name !== pokemon.name);
+        console.log(`${pokemon.name} removed`);
+    }
+    //needs to be able to add a name to the trainer
+    addTrainerName(){
+        const trainerNameElement = document.getElementById("trainerName") as HTMLInputElement;
+        this.name = trainerNameElement.value;
+        this.displayTrainerName();
+    }
+
+    displayTrainerName(){
+        const trainerNameElement = document.getElementById("trainerName") as HTMLDivElement;
+        trainerNameElement.innerText = `Trainer: ${this.name}`;
+        console.log(`Trainer: ${this.name}`);
+    }
+}
+
+
+class Pokemon {
+    name: string;
+    id: number;
+    hp: number;
+    image: string;
+    attack: number;
+
+    constructor (name: string, id: number, hp: number, image: string, attack: number){
+        this.name = name;
+        this.id = id;
+        this.hp = hp;
+        this.image = image;
+        this.attack = attack;
+    }
+    
+    //display pokemon name
+    displayPokemon() {
+        const pokemonImageElement = document.getElementById("pokemonSprite") as HTMLImageElement;
+        const pokemonNameElement = document.getElementById("pokemonNameDisplay") as HTMLDivElement;
+        const pokemonHPElement = document.getElementById("pokemonHPDisplay") as HTMLDivElement;
+        const pokemonAttackElement = document.getElementById("pokemonAttackDisplay") as HTMLDivElement;
+
+        if (pokemonNameElement) {
+            pokemonNameElement.innerText = `Name: ${this.name}`;
+        }
+
+        if (pokemonImageElement) {
+            pokemonImageElement.src = this.image;
+            pokemonImageElement.style.display = "block";
+        }
+
+        if (pokemonHPElement) {
+            pokemonHPElement.innerText = `HP: ${this.hp}`;
+        }
+
+        if (pokemonAttackElement) {
+            pokemonAttackElement.innerText = `Attack: ${this.attack}`;
+        }
+
+        console.log(`Displaying ${this.name}`);
+    }
+
+    attackPokemon(enemy: Pokemon) {
+        //needs to update the enemy pokemon hp
+        enemy.hp -= this.attack;
+        console.log(`${this.name} attacked ${enemy.name} for ${this.attack} damage!`);
+        if (enemy.hp <= 0) {
+            console.log(`${enemy.name} has fainted!`);
+            enemy.hp = 0; // Ensure HP doesn't go below 0
+        }
+    }
+
+    updateHP() {
+        const pokemonHPElement = document.getElementById("pokemonHPDisplay") as HTMLDivElement;
+
+        if(enemy.attack){
+            this.hp -= enemy.attack;
+            console.log(`${enemy.name} attacked ${this.name} for ${enemy.attack} damage!`);
+            pokemonHPElement.innerText = `HP: ${this.hp}`;
+
+            if(this.hp === 0){
+                console.log(`${this.name} has fainted!`);
+                const faintedPokemon = document.getElementById("faintedPokemon") as HTMLDivElement;
+                faintedPokemon.innerText = `${this.name} has fainted!`;
+            }
+        }
+    }
+}
+
+class Enemy {
+    
+}
+    
+
+//testjk
+
+
+
+//create class for enemy
+    // needs to be random
+    // 
+
+
+
