@@ -126,7 +126,7 @@ class Pokemon {
         //needs to update the enemy pokemon hp
         enemy.hp -= this.attack;
         console.log(`${this.name} attacked ${enemy.name} for ${this.attack} damage!`);
-        enemy.updateEnemyHP(this.attack);
+        enemy.updateEnemyHP(this.);
     }
 
     public updateHP(damage: number){ 
