@@ -75,6 +75,8 @@ class Trainer{
         trainerNameElement.innerText = `Trainer: ${this.name}`;
         console.log(`Trainer: ${this.name}`);
     }
+
+    //needs to be able to add pokemon to the team
 }
 
 
@@ -120,45 +122,158 @@ class Pokemon {
         console.log(`Displaying ${this.name}`);
     }
 
-    attackPokemon(enemy: Pokemon) {
+    public attackPokemon(enemy: Pokemon) {
         //needs to update the enemy pokemon hp
         enemy.hp -= this.attack;
         console.log(`${this.name} attacked ${enemy.name} for ${this.attack} damage!`);
-        if (enemy.hp <= 0) {
-            console.log(`${enemy.name} has fainted!`);
-            enemy.hp = 0; // Ensure HP doesn't go below 0
-        }
+        enemy.updateEnemyHP(this.attack);
     }
 
-    updateHP() {
+    public updateHP(damage: number){ 
+
         const pokemonHPElement = document.getElementById("pokemonHPDisplay") as HTMLDivElement;
 
-        if(enemy.attack){
-            this.hp -= enemy.attack;
-            console.log(`${enemy.name} attacked ${this.name} for ${enemy.attack} damage!`);
+        if(pokemonHPElement){
+            this.hp -= damage;
             pokemonHPElement.innerText = `HP: ${this.hp}`;
 
             if(this.hp === 0){
                 console.log(`${this.name} has fainted!`);
                 const faintedPokemon = document.getElementById("faintedPokemon") as HTMLDivElement;
                 faintedPokemon.innerText = `${this.name} has fainted!`;
-            }
+                this.removePokemon()
+;            }
         }
+    }
+
+    removePokemon(){
+        const pokemonImageElement = document.getElementById("pokemonSprite") as HTMLImageElement;
+        const pokemonNameElement = document.getElementById("pokemonNameDisplay") as HTMLDivElement;
+        const pokemonHPElement = document.getElementById("pokemonHPDisplay") as HTMLDivElement;
+        const pokemonAttackElement = document.getElementById("pokemonAttackDisplay") as HTMLDivElement;
+
+        pokemonImageElement.style.display = "none";
+        pokemonImageElement.remove();
+
+        pokemonNameElement.style.display = "none";
+        pokemonNameElement.remove();
+
+        pokemonHPElement.style.display = "none";
+        pokemonHPElement.remove();
+
+        pokemonAttackElement.style.display = "none";
+        pokemonAttackElement.remove();
     }
 }
 
-class Enemy {
-    
+class Enemy extends Pokemon {
+
+    async fetchEnemyPokemon(){
+        try{
+            const enemyPokemonElement = document.getElementById("enemyPokemonSprite") as HTMLImageElement;
+
+            const enemyPokemon = Math.floor(Math.random() * 152 + 1);
+
+            const response = await fetch('https://pokeapi.co/api/v2/pokemon/1');
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+
+            const data = await response.json();
+            console.log(data);
+
+            const pokemonSprite = data.sprites.front_default;
+            const imgElement = document.getElementById("enemyPokemonSprite") as HTMLImageElement;
+
+            if (!imgElement) {
+                throw new Error("Pokemon sprite image element not found");
+            }
+
+            imgElement.src = pokemonSprite;
+            imgElement.style.display = "inline";
+
+            const newEnemyPokemon = new Enemy(
+                data.name,
+                data.id,
+                data.stats.find(stat => stat.stat.name === 'hp').base_stat, // HP
+                data.image,
+                data.stats.find(stat => stat.stat.name === 'attack').base_stat, // attack
+            );
+
+            console.log(`${newEnemyPokemon.name} has appeared!`);
+
+        }
+
+        catch (error){
+            console.log(error);
+        }
+    }
+
+        displayEnemyPokemon(){
+        const enemyPokemonImageElement = document.getElementById("enemyPokemonSprite") as HTMLImageElement;
+        const enemyPokemonNameElement = document.getElementById("enemyPokemonNameDisplay") as HTMLDivElement;   
+        const enemyPokemonHPElement = document.getElementById("enemyPokemonHPDisplay") as HTMLDivElement;
+        const enemyPokemonAttackElement = document.getElementById("enemyPokemonAttackDisplay") as HTMLDivElement;
+
+        if(enemyPokemonNameElement){
+            enemyPokemonNameElement.innerText = `Name: $(this.name)`;
+        }
+        
+        if(enemyPokemonImageElement){
+            enemyPokemonImageElement.innerText = this.image;
+            enemyPokemonImageElement.style.display = "block";
+        }
+
+        if(enemyPokemonHPElement){
+            enemyPokemonHPElement.innerText = `HP: $(this.name)`;
+        }
+
+        if(enemyPokemonAttackElement){
+            enemyPokemonAttackElement.innerText = `Name: $(this.name)`;
+        }
+    }
+
+    public enemyAttackPokemon(pokemon: Pokemon){
+        pokemon.hp -= this.attack;
+        console.log(`${this.name} attacked ${pokemon.name} for ${this.attack} damage!`);
+        this.updateHP(this.attack);
+    }
+
+    public updateEnemyHP(damage: number){
+        const enemyPokemonHP = document.getElementById("enemypokemonHPDisplay") as HTMLDivElement;
+
+        if(enemyPokemonHP){
+            this.hp -= damage;
+            enemyPokemonHP.innerText = `HP: ${this.hp}`;
+
+            if(this.hp === 0){
+                console.log(`${this.name} has fainted!`);
+                const faintedPokemon = document.getElementById("enemyPokemonfaint") as HTMLDivElement;
+                faintedPokemon.innerText = `${this.name} has fainted!`;
+            }
+        }
+    }
+
+    removeEnemyPokemon(){
+        const enemyPokemonImageElement = document.getElementById("enemyPokemonSprite") as HTMLImageElement;
+        const enemyPokemonNameElement = document.getElementById("enemyPokemonNameDisplay") as HTMLDivElement;
+        const enemyPokemonHPElement = document.getElementById("enemyPokemonHPDisplay") as HTMLDivElement;
+        const enemyPokemonAttackElement = document.getElementById("enemyPokemonAttackDisplay") as HTMLDivElement;
+
+        enemyPokemonImageElement.style.display = "none";
+        enemyPokemonImageElement.remove();
+
+        enemyPokemonNameElement.style.display = "none";
+        enemyPokemonNameElement.remove();
+
+        enemyPokemonHPElement.style.display = "none";
+        enemyPokemonHPElement.remove();
+
+        enemyPokemonAttackElement.style.display = "none";
+        enemyPokemonAttackElement.remove();
+    }
 }
-    
 
-//testjk
-
-
-
-//create class for enemy
-    // needs to be random
-    // 
 
 
 

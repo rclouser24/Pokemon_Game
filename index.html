@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+
+    <section> 
+        <h3>Trainer Name</h3>
+        <input type="text" id="trainerName" placeholder="Enter your Name">
+        <button onclick="addTrainerName()">Add Name</button>
+    </section>
+
+    <section id="pokemonInput"></section>
+        <h3>Pick Your Pokemon</h3>
+
+        <input type="text" id="pokemonName" placeholder="Enter Pokemon Name">
+
+        <h3 id="error" style="display: none;">ERROR you can only have 5 pokemon on your team</h3>
+
+        <button onclick="fetchPokemon()">Fetch Pokemon</button><br>
+    </section>
+
+    <section id="pokemonTeam" style="display: block;">
+        <h2 id="TrainerNameDisplay" style="display: none;"></h2>
+
+        <img src="" alt="pokemon sprite" id="pokemonSprite" style="display: none;">
+        <h3 class="pokemonNameDisplay" style="display: none;"></h3>
+        <h5 class="pokemonHPDisplay" style="display: none;"></h5>
+        <h5 class="pokemonAttackDisplay" style="display: none;"></h5>
+        <button id="addToTeam" onclick="addToTeam()">Add to Team</button> 
+        <!-- need to create TS function to add to team -->
+        <button id="removePokemon" onclick="removePokemon()">Remove from Team</button>
+        <p id="pokemonFaint" style="display: none;"></p>
+    </section>
+
+    <section id="EnemyPokemon">
+        <h3>Enemy Pokemon</h3>
+        <button onclick="fetchEnemyPokemon()">Fetch Enemy</button><br>
+        <img src="" alt="pokemon enemy sprite" id="enemyPokemonSprite" style="display: none;">
+        <h3 class="enemyPokemonNameDisplay" style="display: none;"></h3>
+        <h5 class="enemyHPDisplay" style="display: none;"></h5>
+        <h5 class="enemyAttackDisplay" style="display: none;"></h5>
+
+        <button id="removeEnemyPokemon" onclick="removePokemon()">Remove from Team</button>
+        <p id="enemyPokemonFaint" style="display: none;"></p>
+    </section>
+
+
+    <script src="index.ts"></script>
+</body>
+
+</html>
