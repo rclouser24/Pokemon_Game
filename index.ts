@@ -122,29 +122,51 @@ class Pokemon {
         console.log(`Displaying ${this.name}`);
     }
 
-    public attackPokemon(enemy: Pokemon) {
-        //needs to update the enemy pokemon hp
-        enemy.hp -= this.attack;
-        console.log(`${this.name} attacked ${enemy.name} for ${this.attack} damage!`);
-        enemy.updateEnemyHP(this.);
+    public attackPokemon(target: Pokemon) {
+        // Ensure the attacker and target are alive
+        if (this.hp <= 0) {
+            console.log(`${this.name} cannot attack because it has fainted.`);
+            return;
+        }
+    
+        if (target.hp <= 0) {
+            console.log(`${target.name} has already fainted.`);
+            return;
+        }
+    
+        // Calculate new HP for the target
+        target.hp -= this.attack;
+    
+        // Ensure HP does not go below 0
+        if (target.hp < 0) {
+            target.hp = 0;
+        }
+    
+        console.log(`${this.name} attacked ${target.name} for ${this.attack} damage!`);
+        console.log(`${target.name}'s HP is now ${target.hp}.`);
+    
+        // Update the target's DOM
+        target.updateHP(this.attack);
     }
-
-    public updateHP(damage: number){ 
-
+    
+    public updateHP(damage: number) {
         const pokemonHPElement = document.getElementById("pokemonHPDisplay") as HTMLDivElement;
-
-        if(pokemonHPElement){
-            this.hp -= damage;
+    
+        if (pokemonHPElement) {
             pokemonHPElement.innerText = `HP: ${this.hp}`;
-
-            if(this.hp === 0){
+    
+            // Handle fainting logic
+            if (this.hp <= 0) {
                 console.log(`${this.name} has fainted!`);
                 const faintedPokemon = document.getElementById("faintedPokemon") as HTMLDivElement;
-                faintedPokemon.innerText = `${this.name} has fainted!`;
-                this.removePokemon()
-;            }
+                if (faintedPokemon) {
+                    faintedPokemon.innerText = `${this.name} has fainted!`;
+                }
+                this.removePokemon();
+            }
         }
     }
+
 
     removePokemon(){
         const pokemonImageElement = document.getElementById("pokemonSprite") as HTMLImageElement;
@@ -233,23 +255,45 @@ class Enemy extends Pokemon {
         }
     }
 
-    public enemyAttackPokemon(pokemon: Pokemon){
-        pokemon.hp -= this.attack;
-        console.log(`${this.name} attacked ${pokemon.name} for ${this.attack} damage!`);
-        this.updateHP(this.attack);
+    public enemyAttackPokemon(target: Pokemon) {
+        if (this.hp <= 0) {
+            console.log(`${this.name} cannot attack because it has fainted.`);
+            return;
+        }
+    
+        if (target.hp <= 0) {
+            console.log(`${target.name} has already fainted.`);
+            return;
+        }
+    
+        // Calculate new HP for the target
+        target.hp -= this.attack;
+    
+        // Ensure HP does not go below 0
+        if (target.hp < 0) {
+            target.hp = 0;
+        }
+    
+        console.log(`${this.name} attacked ${target.name} for ${this.attack} damage!`);
+        console.log(`${target.name}'s HP is now ${target.hp}.`);
+    
+        // Update the target's DOM
+        target.updateHP(this.attack);
     }
-
-    public updateEnemyHP(damage: number){
-        const enemyPokemonHP = document.getElementById("enemypokemonHPDisplay") as HTMLDivElement;
-
-        if(enemyPokemonHP){
-            this.hp -= damage;
+    
+    public updateEnemyHP() {
+        const enemyPokemonHP = document.getElementById("enemyPokemonHPDisplay") as HTMLDivElement;
+    
+        if (enemyPokemonHP) {
             enemyPokemonHP.innerText = `HP: ${this.hp}`;
-
-            if(this.hp === 0){
+    
+            if (this.hp <= 0) {
                 console.log(`${this.name} has fainted!`);
-                const faintedPokemon = document.getElementById("enemyPokemonfaint") as HTMLDivElement;
-                faintedPokemon.innerText = `${this.name} has fainted!`;
+                const faintedEnemyPokemon = document.getElementById("enemyPokemonFaint") as HTMLDivElement;
+                if (faintedEnemyPokemon) {
+                    faintedEnemyPokemon.innerText = `${this.name} has fainted!`;
+                }
+                this.removeEnemyPokemon();
             }
         }
     }
